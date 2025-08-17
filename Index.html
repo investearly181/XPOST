@@ -1,0 +1,291 @@
+import React, { useState } from 'react';
+
+// Main App component for the Crypto News to X Post Generator
+const App = () => {
+    // State variables
+    const [newsHeadline, setNewsHeadline] = useState('');
+    const [newsContent, setNewsContent] = useState('');
+    const [newsSource, setNewsSource] = useState('');
+    const [simulatedImageUrl, setSimulatedImageUrl] = useState(''); // Used for displaying image in UI
+    const [newsArticleUrl, setNewsArticleUrl] = useState(''); // State for news article URL (placeholder in this simulation)
+    const [generatedPost, setGeneratedPost] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [message, setMessage] = useState('');
+
+    /**
+     * Simulates fetching the latest crypto news.
+     * In a real application, this would involve a backend call to a news API
+     * specifically for crypto news (e.g., CoinDesk API, NewsData.io crypto feed).
+     */
+    const fetchLatestCryptoNews = async () => {
+        setIsLoading(true);
+        setMessage('');
+        setGeneratedPost(''); // Clear previous post
+        setSimulatedImageUrl(''); // Clear previous image
+        setNewsArticleUrl(''); // Clear previous news article URL
+
+        // Simulate API call delay for fetching news
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        // --- Simulated Latest Crypto News Data (representing within 24 hours) ---
+        // 'simulatedImageUrl' is for display in the app, 'newsArticleUrl' is for the post (still example.com)
+        const cryptoNewsOptions = [
+            {
+                headline: "Crypto Market Sees Sudden Volatility Ahead of Key Economic Data Release",
+                content: "The cryptocurrency market experienced sharp price movements in the last few hours as investors react to anticipation of upcoming inflation reports. Bitcoin briefly dipped below crucial support levels before a swift recovery.",
+                source: "CryptoNews Daily",
+                simulatedImageUrl: "https://placehold.co/600x400/FF5733/FFFFFF?text=Market+Volatile",
+                newsArticleUrl: "https://example.com/latest-market-volatility"
+            },
+            {
+                headline: "New AI-Powered DeFi Protocol Launches, Promising Higher Yields & Security",
+                content: "A groundbreaking decentralized finance (DeFi) protocol integrating artificial intelligence has just gone live, aiming to revolutionize staking and lending with enhanced security features and competitive yields for early participants.",
+                source: "The Block Insights",
+                simulatedImageUrl: "https://placehold.co/600x400/33FF57/FFFFFF?text=AI+DeFi+Launch",
+                newsArticleUrl: "https://example.com/new-ai-defi-launch"
+            },
+            {
+                headline: "Ethereum Devs Announce Accelerated Timeline for Next Major Upgrade",
+                content: "Ethereum core developers confirmed an expedited rollout for the 'Verkle Tree' upgrade, expected to significantly improve network efficiency and data storage. The news sparked optimism for ETH's long-term scalability.",
+                source: "CoinDesk Research",
+                simulatedImageUrl: "https://placehold.co/600x400/3357FF/FFFFFF?text=ETH+Upgrade",
+                newsArticleUrl: "https://example.com/ethereum-upgrade-timeline"
+            },
+            {
+                headline: "Whale Alert: $500M in Bitcoin Moved to Exchange, Signaling Potential Volatility",
+                content: "A large Bitcoin whale transaction involving over $500 million has been detected, moving funds to a major exchange. This significant transfer often precedes increased market volatility, as traders watch for signs of selling pressure.",
+                source: "Blockchain Analytics",
+                simulatedImageUrl: "https://placehold.co/600x400/FFFF33/000000?text=Bitcoin+Whale",
+                newsArticleUrl: "https://example.com/bitcoin-whale-movement"
+            },
+            {
+                headline: "NFT Sales Volume Surges 30% in Past 24 Hours, Driven by New Collections",
+                content: "The Non-Fungible Token (NFT) market has seen a sharp increase in trading volume over the last day, with several new collections gaining traction and attracting significant buyer interest, indicating renewed enthusiasm in the digital collectibles space.",
+                source: "CryptoArt News",
+                simulatedImageUrl: "https://placehold.co/600x400/A020F0/FFFFFF?text=NFT+Surge",
+                newsArticleUrl: "https://example.com/nft-sales-surge"
+            },
+            {
+                headline: "Major Country Explores CBDC Pilot Program with Leading Blockchain Firms",
+                content: "A prominent nation's central bank has announced plans for a pilot program to explore its Central Bank Digital Currency (CBDC), partnering with several established blockchain technology companies. This marks a significant step towards digital currency adoption.",
+                source: "Global Finance Wire",
+                simulatedImageUrl: "https://placehold.co/600x400/FF00FF/FFFFFF?text=CBDC+Pilot",
+                newsArticleUrl: "https://example.com/country-cbdc-pilot"
+            }
+        ];
+
+        // Randomly select a news item from the array
+        const randomIndex = Math.floor(Math.random() * cryptoNewsOptions.length);
+        const latestNews = cryptoNewsOptions[randomIndex];
+
+        setNewsHeadline(latestNews.headline);
+        setNewsContent(latestNews.content);
+        setNewsSource(latestNews.source); 
+        setSimulatedImageUrl(latestNews.simulatedImageUrl); // Set the image URL for display
+        setNewsArticleUrl(latestNews.newsArticleUrl); // Set the news article URL (still a placeholder)
+
+        setMessage('Latest crypto news fetched. Now click "Generate X Post" to create your tweet!');
+        setIsLoading(false);
+    };
+
+    /**
+     * Simulates generating the X post using an LLM based on the fetched news.
+     * In a real scenario, this would involve sending the news content to an LLM API
+     * (like Gemini) and receiving a summarized, formatted tweet.
+     */
+    const generateXPost = async () => {
+        setIsLoading(true);
+        setMessage('');
+
+        if (!newsHeadline || !newsContent || !newsSource || !newsArticleUrl) { 
+            setMessage('Please fetch the latest crypto news first.');
+            setIsLoading(false);
+            return;
+        }
+
+        // Simulate LLM call to summarize and format the news
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        // Phrase to indicate breaking/great news
+        const breakingNewsPrefix = "🚨 JUST IN:"; 
+
+        let llmGeneratedSummary = '';
+        let hashtags = '';
+
+        if (newsHeadline.includes('Volatility') || newsHeadline.includes('Economic Data')) {
+            llmGeneratedSummary = `${breakingNewsPrefix} Crypto market sees sudden volatility ahead of key economic data! Bitcoin briefly dipped then recovered. Watch closely!`;
+            hashtags = '#Crypto #MarketUpdate #Bitcoin';
+        } else if (newsHeadline.includes('AI-Powered DeFi Protocol')) {
+            llmGeneratedSummary = `${breakingNewsPrefix} New AI-powered DeFi protocol just launched! Promises higher yields and enhanced security. Huge for #DeFi!`;
+            hashtags = '#AI #DeFi #CryptoInnovation';
+        } else if (newsHeadline.includes('Ethereum Devs') || newsHeadline.includes('Upgrade')) {
+            llmGeneratedSummary = `${breakingNewsPrefix} Ethereum devs announce accelerated timeline for next major upgrade! Expecting better efficiency & storage. #ETH #Blockchain`;
+            hashtags = '#Ethereum #VerkleTree #CryptoNews';
+        } else if (newsHeadline.includes('Whale Alert') || newsHeadline.includes('Bitcoin Moved')) {
+             llmGeneratedSummary = `${breakingNewsPrefix} Whale alert! $500M in Bitcoin moved to an exchange, signaling potential volatility. Keep an eye on #BTC!`;
+            hashtags = '#Bitcoin #WhaleAlert #CryptoMarket';
+        } else if (newsHeadline.includes('NFT Sales Volume')) {
+            llmGeneratedSummary = `${breakingNewsPrefix} NFT sales volume surged 30% in 24 hours! New collections driving renewed interest in digital collectibles. #NFTs #CryptoArt`;
+            hashtags = '#NFTs #CryptoArt #DigitalCollectibles';
+        } else if (newsHeadline.includes('CBDC Pilot Program')) {
+            llmGeneratedSummary = `${breakingNewsPrefix} Major country exploring CBDC pilot with leading blockchain firms! Significant step towards digital currency adoption. #CBDC #DigitalCurrency`;
+            hashtags = '#CBDC #Blockchain #FinTech';
+        }
+        else {
+            llmGeneratedSummary = `${breakingNewsPrefix} Latest Crypto News: Key market shifts and significant developments. Stay informed on the go!`;
+            hashtags = '#CryptoUpdate #FinanceNews #Blockchain';
+        }
+
+        // Combine summary, source, and hashtags (simulatedImageUrl and newsArticleUrl are NOT included here)
+        let finalTweet = `${llmGeneratedSummary}\n\nSource: ${newsSource} ${hashtags}`;
+
+
+        // Ensure it's within X's character limit (280 characters)
+        const maxTweetLength = 280;
+        const staticTextLength = `\nSource:  `.length; // Length of fixed text parts
+
+        // Calculate potential tweet length without URL
+        const estimatedTweetLength = llmGeneratedSummary.length + staticTextLength + hashtags.length;
+
+        if (estimatedTweetLength > maxTweetLength) {
+            // If it's too long, trim the summary
+            const availableSpace = maxTweetLength - (staticTextLength + hashtags.length + 3); // +3 for "..."
+            llmGeneratedSummary = llmGeneratedSummary.substring(0, availableSpace) + '...';
+            finalTweet = `${llmGeneratedSummary}\n\nSource: ${newsSource} ${hashtags}`;
+        }
+
+
+        setGeneratedPost(finalTweet);
+        setMessage('X post generated! Click "Copy to Clipboard" to paste it.');
+        setIsLoading(false);
+    };
+
+    /**
+     * Copies the generated post to the clipboard.
+     * Uses document.execCommand('copy') for broader browser compatibility in iframes.
+     */
+    const copyToClipboard = () => {
+        const postText = generatedPost;
+        if (postText) {
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = postText;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+            setMessage('Post copied to clipboard!');
+        } else {
+            setMessage('No post to copy yet!');
+        }
+    };
+
+    return (
+        <div className="min-h-screen bg-gray-900 text-gray-100 flex items-center justify-center p-4 font-inter">
+            <div className="bg-gray-800 p-8 rounded-lg shadow-2xl w-full max-w-2xl border border-blue-600">
+                <h1 className="text-4xl font-extrabold text-center mb-8 text-blue-400">
+                    Crypto News to X Post Generator
+                </h1>
+
+                {/* Fetch Latest Crypto News Section */}
+                <div className="mb-8 p-6 bg-gray-700 rounded-lg border border-gray-600">
+                    <h2 className="text-2xl font-bold mb-4 text-blue-300">Fetch Latest Crypto News</h2>
+                    <p className="text-sm text-gray-400 mb-4">
+                        Click the button below to get the most recent crypto and financial news updates.
+                    </p>
+                    <button
+                        onClick={fetchLatestCryptoNews}
+                        className={`mt-6 w-full py-3 px-6 rounded-md text-lg font-semibold transition duration-300 ease-in-out
+                            ${isLoading
+                                ? 'bg-indigo-800 cursor-not-allowed opacity-70'
+                                : 'bg-indigo-600 hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-800'
+                            }
+                            shadow-lg transform hover:scale-105 active:scale-95`}
+                        disabled={isLoading}
+                    >
+                        {isLoading ? (
+                            <div className="flex items-center justify-center">
+                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                Fetching News...
+                            </div>
+                        ) : (
+                            'Fetch Latest Crypto News'
+                        )}
+                    </button>
+                </div>
+
+                {/* Display Fetched News (Simulated) */}
+                {(newsHeadline || newsContent || newsSource) && (
+                    <div className="mb-8 p-6 bg-gray-700 rounded-lg border border-gray-600">
+                        <h2 className="text-2xl font-bold mb-4 text-blue-300">Simulated Latest News</h2>
+                        <p className="text-lg font-semibold text-gray-200 mb-2">{newsHeadline}</p>
+                        <p className="text-gray-300 text-base mb-2">{newsContent}</p>
+                        <p className="text-gray-400 text-sm">Source: {newsSource}</p>
+                        {simulatedImageUrl && (
+                            <div className="mt-4 flex justify-center">
+                                <img
+                                    src={simulatedImageUrl}
+                                    alt="Simulated news image"
+                                    className="rounded-lg max-w-full h-auto"
+                                    onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/600x400/CCCCCC/000000?text=Image+Not+Found"; }}
+                                />
+                            </div>
+                        )}
+                        <button
+                            onClick={generateXPost}
+                            className={`mt-6 w-full py-3 px-6 rounded-md text-lg font-semibold transition duration-300 ease-in-out
+                                ${isLoading
+                                    ? 'bg-blue-800 cursor-not-allowed opacity-70'
+                                    : 'bg-blue-600 hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800'
+                                }
+                                shadow-lg transform hover:scale-105 active:scale-95`}
+                            disabled={isLoading}
+                        >
+                            {isLoading ? (
+                                <div className="flex items-center justify-center">
+                                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                    Generating Post...
+                                </div>
+                            ) : (
+                                'Generate X Post'
+                            )}
+                        </button>
+                    </div>
+                )}
+
+
+                {/* Message Display */}
+                {message && (
+                    <div className={`mt-6 p-3 rounded-md text-center ${message.includes('successfully') || message.includes('copied') ? 'bg-green-700' : 'bg-red-700'} text-white`}>
+                        {message}
+                    </div>
+                )}
+
+                {/* Generated X Post Display */}
+                {generatedPost && (
+                    <div className="mt-8 p-6 bg-blue-900 rounded-lg shadow-inner border border-blue-700">
+                        <h2 className="text-2xl font-bold mb-4 text-blue-200">Your X Post (Copy-Paste Ready!)</h2>
+                        <div className="bg-gray-700 p-4 rounded-md border border-gray-600 text-gray-100 whitespace-pre-wrap break-words">
+                            <p className="text-lg leading-relaxed">{generatedPost}</p>
+                        </div>
+                        <button
+                            onClick={copyToClipboard}
+                            className={`mt-6 w-full py-3 px-6 rounded-md text-lg font-semibold transition duration-300 ease-in-out
+                                bg-emerald-600 hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-gray-800
+                                shadow-lg transform hover:scale-105 active:scale-95`}
+                        >
+                            Copy to Clipboard
+                        </button>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+export default App;
